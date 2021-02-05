@@ -1,0 +1,268 @@
+<!doctype html>
+<html lang="ja">
+ 
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+    <meta name="description" content="獲得ファン数からスコア、スコアから対応した獲得ファン数を計算できるデレステ用の計算機です。シンデレラチャームやファン数増量キャンペーンにも対応しています。" />
+    <!--<meta name="keywords" content="デレステ, スコア, ファン数, ファン数調整, ファン, 計算, 計算機" />-->
+    <meta name="google-site-verification" content="Dpq1LLc6XhnpJsTrhrmTeMrP7NfM-2UShrxf59xJ8nU" />
+ 
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
+ 
+    <title>【デレステ】 ファン数スコア計算機</title>
+
+</head>
+ 
+<body>
+    <br>
+    
+    <div class="text-center border" style="background-color: rgb(240, 240, 255);">
+    <h2 class="text-info"><b>デレステ&emsp;ファン数⇔スコア計算機</b></h2></div>
+    <br>
+    <div class="form-group col-11" style="margin: auto; width: 7cm;">
+        <label>PデスクLv. </label>
+        <select name="desk" id="desk" class="form-control">
+            <option>10</option>
+            <option>9</option>
+            <option>8</option>
+            <option>7</option>
+            <option>6</option>
+            <option>5</option>
+            <option>4</option>
+            <option>3</option>
+            <option>2</option>
+            <option>1</option>
+        </select>
+    </div>
+    <br/>
+    <div class="form-group col-11" style="margin: auto; text-align: center;">
+        <p><input type="checkbox" name="campaign" id="campaign" value="1"> ファン数獲得↑キャンペーン期間（2倍）</p>
+    </div>
+    <br/>
+    <div class="border col-11" style="margin: auto; border-radius: 15px;">
+        <br>
+        <h3>ファン数→スコア</h3>
+        <br>
+        <div class="row">
+            <div class="col-md">
+                <form>
+                    <div class="form-group">
+                        <label>対象アイドルの現在のファン数：</label>
+                        <input type="text" name="cur_fun" id="cur_fun" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>目標ファン数：</label>
+                        <input type="text" name="goal_fun" id="goal_fun" class="form-control">
+                    </div>
+                    <div class="row center-block text-center">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <input type="button" value="担当称号" class="btn btn-outline-secondary btn-block" onclick="onButtonClick_tantou();" />
+                        </div>
+                        <div class="col-5">
+                            <input type="button" value="有力称号" class="btn btn-outline-secondary btn-block" onclick="onButtonClick_yuuryoku();" /><br>
+                        </div>
+                    </div>
+                    <div class="row center-block text-center">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <input type="button" value="有名称号" class="btn btn-outline-secondary btn-block" onclick="onButtonClick_yuumei();" />
+                        </div>
+                        <div class="col-5">
+                            <input type="button" value="高名称号" class="btn btn-outline-secondary btn-block" onclick="onButtonClick_koumei();" /><br>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>シンデレラチャーム（センター）の数：</label>
+                        <select name="charm" id="charm" class="form-control">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ユニット内の対象アイドルの数：</label>
+                        <select name="unit" id="unit" class="form-control">
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                    <div class="row center-block text-center">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <!--<button type="button" class="btn btn-outline-secondary btn-block">リセット</button>-->
+                            <input type="reset" value="リセット" class="btn btn-outline-secondary btn-block">
+                        </div>
+                        <div class="col-5">
+                            <button type="button" id="button1" name="button1" class="btn btn-outline-primary btn-block">計算</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        &nbsp;
+        <font color='696969' size=5><span id="match2" style="text-align: center;">スコア：</span></font>
+        <font color='696969' size=5><div id="match1" style="text-align: center;">&nbsp;</div></font>
+        <br>
+        <font color='696969' size=2><div id="match" style="text-align: center;">うまく動かない場合は、ファン数の増加量が対象アイドルの数で割り切れるように調整してください。</div></font>
+        <br><br>
+    </div>
+
+<!--*********************************************************************************************************-->
+    <br><br>
+    <div class="border col-11" style="margin: auto; border-radius: 15px;">
+        <br>
+        <h3>スコア→ファン数</h3>
+        <br>
+        <div class="row">
+            <div class="col-md">
+                <form>
+                    <div class="form-group">
+                        <label>スコア：</label>
+                        <input type="text" name="score" id="score" class="form-control">
+                    </div>
+                    <div class="form-group">
+                        <label>シンデレラチャーム（センター）の数：</label>
+                        <select name="charm2" id="charm2" class="form-control">
+                            <option>0</option>
+                            <option>1</option>
+                            <option>2</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>ユニット内の対象アイドルの数（任意）：</label>
+                        <select name="unit2" id="unit2" class="form-control">
+                            <option></option>
+                            <option>1</option>
+                            <option>2</option>
+                            <option>3</option>
+                            <option>4</option>
+                            <option>5</option>
+                        </select>
+                    </div>
+                    <div class="row center-block text-center">
+                        <div class="col-1">
+                        </div>
+                        <div class="col-5">
+                            <!--<button type="button" class="btn btn-outline-secondary btn-block">リセット</button>-->
+                            <input type="reset" value="リセット" class="btn btn-outline-secondary btn-block">
+                        </div>
+                        <div class="col-5">
+                            <button type="button" id="button2" name="button2" class="btn btn-outline-primary btn-block">計算</button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+        </div>
+        <br>
+        <font color='696969' size=5><span id="match3" >&nbsp;</span></font>
+        <font color='696969' size=5><div id="match4" >&nbsp;</div></font>
+        <br>
+    </div><br><br>
+        <div class="text-center border" style="background-color: silver;"><br>
+            <label>Twitter：</label>
+            <a href="https://twitter.com/Ypko33">@Ypko33<br></a>
+            <br>
+        </div>
+
+    <!-- Optional JavaScript -->
+    <!-- jQuery first, then Popper.js, then Bootstrap JS -->
+    <script src="https://code.jquery.com/jquery-3.3.1.slim.min.js" integrity="sha384-q8i/X+965DzO0rT7abK41JStQIAqVgRVzpbzo5smXKp4YfRvH+8abtTE1Pi6jizo" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js" integrity="sha384-ZMP7rVo3mIykV+2+9J3UJ46jBk0WLaUAdn689aCwoqbBJiSnjAK/l8WvCWPIPm49" crossorigin="anonymous"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
+    <!-- temp -->
+    <script type="text/javascript">
+        $(function() {
+            $('input[name="campaign"]').change(function()
+            {
+                if($(this).prop('checked')){
+                    $('input[name="campaign"]').val("2")
+                } else {
+                    $('input[name="campaign"]').val("1")
+                }
+            })
+        })
+
+        function onButtonClick_tantou() {
+            document.getElementById("goal_fun").value = "100000";
+        }
+
+        function onButtonClick_yuuryoku() {
+            document.getElementById("goal_fun").value = "300000";
+        }
+
+        function onButtonClick_yuumei() {
+            document.getElementById("goal_fun").value = "3000000";
+        }
+
+        function onButtonClick_koumei() {
+            document.getElementById("goal_fun").value = "15000000";
+        }
+
+        $(function fantoscore(){
+        $("#button1").on("click", function fantoscore(){
+            var textData = JSON.stringify({"desk":$("#desk").val(),"cur_fun":$("#cur_fun").val(),"goal_fun":$("#goal_fun").val(),"charm":$("#charm").val(),"unit":$("#unit").val(),"campaign":$("[name=campaign]").val()});
+            $.ajax({
+            type:'POST',
+            url:'/fantoscore',
+            data:textData,
+            contentType:'application/json',
+            // 非同期通信が成功したら実行される
+            success:function(data){
+                var result_err = JSON.parse(data.ResultSet).result_err;
+                if(result_err == 1){
+                    $("#match1").text(result_err);
+                }
+                else{
+                    var result1 = JSON.parse(data.ResultSet).result_min;
+                    var result2 = JSON.parse(data.ResultSet).result_max;
+                    $("#match1").text(result1 + "～" + result2);
+                    //console.log(result)
+                }
+            }
+            });
+        });
+        });
+
+        $(function scoretofun(){
+        $("#button2").on("click", function scoretofun(){
+            var textData = JSON.stringify({"desk":$("#desk").val(),"score":$("#score").val(),"charm2":$("#charm2").val(),"unit2":$("#unit2").val(),"campaign":$("[name=campaign]").val()});
+            $.ajax({
+            type:'POST',
+            url:'/scoretofun',
+            data:textData,
+            contentType:'application/json',
+            // 非同期通信が成功したら実行される
+            success:function scoretofun(data){
+                var result3 = JSON.parse(data.ResultSet).get_fun;
+                var result4 = JSON.parse(data.ResultSet).total_of_get_fun;
+                if(result4==0){
+                    $("#match3").text("");
+                    $("#match4").text("対象アイドルの獲得ファン数は " + result3 + " 人");
+                }
+                else{
+                    $("#match3").text("1人当たり +" + result3 + " 人");
+                    $("#match4").text("ユニット全体で +" + result4 + " 人");
+                }
+                //console.log(result)
+
+            }
+            });
+        });
+        });
+        </script>
+        <!-- temp -->
+</body>
+ 
+</html>
