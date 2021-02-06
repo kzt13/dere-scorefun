@@ -7,6 +7,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
     <meta name="description" content="獲得ファン数からスコア、スコアから対応した獲得ファン数を計算できるデレステ用の計算機です。シンデレラチャームやファン数増量キャンペーンにも対応しています。" />
     <!--<meta name="keywords" content="デレステ, スコア, ファン数, ファン数調整, ファン, 計算, 計算機" />-->
+    <meta name="google-site-verification" content="Dpq1LLc6XhnpJsTrhrmTeMrP7NfM-2UShrxf59xJ8nU" />
  
     <!-- Bootstrap CSS -->
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha384-MCw98/SFnGE8fJT3GXwEOngsV7Zt27NXFoaoApmYm81iuXoPkFOJwJ8ERdknLPMO" crossorigin="anonymous">
@@ -50,7 +51,7 @@
                 <form>
                     <div class="form-group">
                         <label>対象アイドルの現在のファン数：</label>
-                        <input type="text" name="cur_fun" id="cur_fun" class="form-control">
+                        <input type="text" name="cur_fun" id="cur_fun" class="form-control" value="0">
                     </div>
                     <div class="form-group">
                         <label>目標ファン数：</label>
@@ -182,13 +183,33 @@
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js" integrity="sha384-ChfqqxuZUCnJSK3+MXmPNIyE6ZbWh2IMqE241rYiqJxyMiZ6OW/JmZQ5stwEULTy" crossorigin="anonymous"></script>
     <!-- temp -->
     <script type="text/javascript">
+    /*
+    var inputCur = document.getElementById("cur_fun");
+    var inputGoal = document.getElementById("goal_fun");
+    var inputScore = document.getElementById("score");
+    inputCur.addEventListener("keyup", btn1Disable);
+    inputGoal.addEventListener("keyup", btn1Disable);
+    const numberRegex = [0-9];
+
+
+    var btn1Disable = function(){
+        var btn1 = document.getElementById("button1")
+        var cur_fun = inputCur.val()
+        var goal_fun = inputGoal.val()
+        console.log("rfoa")
+        if(numberRegex.test(cur_fun) && numberRegex.test(goal_fun)){
+            btn1.disabled = false;
+        } else {
+            btn1.disabled = true;
+        }
+    }*/
         $(function() {
             $('input[name="campaign"]').change(function()
             {
                 if($(this).prop('checked')){
-                    $('input[name="campaign"]').val("2")
+                    $('input[name="campaign"]').val("0.5");
                 } else {
-                    $('input[name="campaign"]').val("1")
+                    $('input[name="campaign"]').val("1");
                 }
             })
         })
@@ -207,10 +228,44 @@
 
         function onButtonClick_koumei() {
             document.getElementById("goal_fun").value = "15000000";
-        }
+		}
+		
+		function isNumber(numVal){
+			// チェック条件パターン
+			var pattern = [1-5];
+			// 数値チェック
+			return pattern.test(numVal);
+		}
 
         $(function fantoscore(){
-        $("#button1").on("click", function fantoscore(){
+		$("#button1").on("click", function fantoscore(){
+			var desk = $("#desk").val();
+			var cur_fun = $("#cur_fun").val();
+			var goal_fun = $("#goal_fun").val();
+			var charm = $("#charm").val();
+			var unit = $("#unit").val()
+			var campaign = $("[name=campaign]").val();
+			var num = 0;
+			var err = false;
+
+			if(goal_fun % (unit * campaign) == 0){
+				if (goal_fun - cur_fun > 0){
+					var required_fun = goal_fun - cur_fun;
+					var max_score = required_fun / (unit*(0.001*(1+(desk/100)+charm*0.4))) * campaign;
+					max_score = Math.floor(max_score);
+					var val1 = Math.ceil(max_score*0.001*(1+(desk/100)+charm*0.4)) * campaign;
+					var val2 = Math.ceil((max_score-num)*0.001*(1+(desk/100)+charm*0.4)) * campaign;
+					while (val1 == val2){
+						num++;
+						val2 = Math.ceil((max_score-num)*0.001*(1+(desk/100)+charm*0.4)) * campaign;
+					}
+					var min_score = max_score - num + 1;
+					num = 0;
+					$("#match1").text(min_score + "～" + max_score)
+				}
+			}
+
+			/*
             var textData = JSON.stringify({"desk":$("#desk").val(),"cur_fun":$("#cur_fun").val(),"goal_fun":$("#goal_fun").val(),"charm":$("#charm").val(),"unit":$("#unit").val(),"campaign":$("[name=campaign]").val()});
             $.ajax({
             type:'POST',
@@ -231,11 +286,38 @@
                 }
             }
             });
-        });
+		});
+		*/
         });
 
         $(function scoretofun(){
         $("#button2").on("click", function scoretofun(){
+			var desk = $("#desk").val();
+			var score = $("#score").val();
+			var charm = $("#charm2").val();
+			//var unit = $("#unit2").val()
+			var campaign = $("[name=campaign]").val();
+            var err = false;
+            //console.log(desk, score, charm, campaign)
+
+			var get_fun = Math.ceil((score/1000) * (1+(desk/100)+charm*0.4)) * (1/campaign);
+            var total_of_get_fun = get_fun * 5;
+            //console.log(get_fun)
+            //console.log(total_of_get_fun)
+			if ($("#unit2").val()!=""){
+				var unit = Number( $("#unit2").val());
+				var idol_get_fun = get_fun * unit;
+				total_of_get_fun = 0;
+			}
+
+			if(total_of_get_fun==0){
+				$("#match3").text("");
+				$("#match4").text("対象アイドルの獲得ファン数は " + idol_get_fun + " 人");
+			} else {
+				$("#match3").text("1人当たり +" + get_fun + " 人");
+				$("#match4").text("ユニット全体で +" + total_of_get_fun + " 人");
+			}
+			/*
             var textData = JSON.stringify({"desk":$("#desk").val(),"score":$("#score").val(),"charm2":$("#charm2").val(),"unit2":$("#unit2").val(),"campaign":$("[name=campaign]").val()});
             $.ajax({
             type:'POST',
@@ -257,9 +339,11 @@
                 //console.log(result)
 
             }
-            });
-        });
-        });
+			});
+			
+        });*/
+		});
+	})});
         </script>
         <!-- temp -->
 </body>
